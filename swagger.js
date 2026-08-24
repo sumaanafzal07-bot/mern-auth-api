@@ -11,12 +11,12 @@ const options = {
       "MERN API with JWT authentication, real-time Socket.IO tasks, and Cloudinary avatar uploads.",
   },
 
-  servers: [
-    {
-      url: "http://localhost:5000",
-      description: "Local server",
-    },
-  ],
+ servers: [
+  {
+    url: "https://mern-auth-api-production-3810.up.railway.app",
+    description: "Production server",
+  },
+],
 
   components: {
     securitySchemes: {
