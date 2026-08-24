@@ -11,6 +11,7 @@ const setSocketIO = (socketIO) => {
 };
 
 // Create a task
+// Create a task
 router.post("/", protect, async (req, res) => {
     try {
         const { title, description, status } = req.body;
@@ -36,10 +37,10 @@ router.post("/", protect, async (req, res) => {
 });
 
 // Get all tasks for a user
-router.get("/:userId", protect, async (req, res) => {
+router.get("/", protect, async (req, res) => {
     try {
         const tasks = await Task.find({
-            user: req.params.userId
+            user: req.user.id
         }).sort({ createdAt: -1 });
 
         res.json(tasks);
