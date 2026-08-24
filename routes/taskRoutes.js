@@ -1,5 +1,6 @@
 const express = require("express");
 const Task = require("../models/Task");
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -10,18 +11,19 @@ const setSocketIO = (socketIO) => {
 };
 
 // Create a task
-router.post("/", async (req, res) => {
+router.post("/", protect, async (req, res) => {
     try {
-        const { title, description, user } = req.body;
+        const { title, description, status } = req.body;
 
         const task = await Task.create({
             title,
             description,
-            user
+            status: status || "pending",
+            user: req.user.id
         });
 
         if (io) {
-            io.to(`user:${user}`).emit("taskCreated", task);
+            io.to(`user:${req.user.id}`).emit("taskCreated", task);
         }
 
         res.status(201).json(task);
@@ -34,7 +36,7 @@ router.post("/", async (req, res) => {
 });
 
 // Get all tasks for a user
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", protect, async (req, res) => {
     try {
         const tasks = await Task.find({
             user: req.params.userId
@@ -50,7 +52,7 @@ router.get("/:userId", async (req, res) => {
 });
 
 // Update task status
-router.put("/:id", async (req, res) => {
+router.put("/:id", protect, async (req, res) => {
     try {
         const { status } = req.body;
 
