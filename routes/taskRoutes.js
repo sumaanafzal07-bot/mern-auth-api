@@ -10,8 +10,39 @@ const setSocketIO = (socketIO) => {
     io = socketIO;
 };
 
-// Create a task
-// Create a task
+/**
+ * @swagger
+ * /api/tasks:
+ *   post:
+ *     summary: Create a new task
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Complete Week 3 Assignment
+ *               description:
+ *                 type: string
+ *                 example: Finish Socket.IO and Cloudinary integration
+ *               status:
+ *                 type: string
+ *                 enum: [pending, completed]
+ *                 example: pending
+ *     responses:
+ *       201:
+ *         description: Task created successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.post("/", protect, async (req, res) => {
     try {
         const { title, description, status } = req.body;
@@ -36,7 +67,20 @@ router.post("/", protect, async (req, res) => {
     }
 });
 
-// Get all tasks for a user
+/**
+ * @swagger
+ * /api/tasks:
+ *   get:
+ *     summary: Get all tasks for the authenticated user
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's tasks
+ *       401:
+ *         description: Unauthorized
+ */
 router.get("/", protect, async (req, res) => {
     try {
         const tasks = await Task.find({
@@ -52,7 +96,42 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
-// Update task status
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   put:
+ *     summary: Update task status
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Task ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, completed]
+ *                 example: completed
+ *     responses:
+ *       200:
+ *         description: Task updated successfully
+ *       404:
+ *         description: Task not found
+ *       401:
+ *         description: Unauthorized
+ */
 router.put("/:id", protect, async (req, res) => {
     try {
         const { status } = req.body;
